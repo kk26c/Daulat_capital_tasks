@@ -6,20 +6,20 @@ import requests
 from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
-from newsapi.newsapi_client import NewsApiClient  # Requires API key
+from newsapi.newsapi_client import NewsApiClient  
 
-# --- Config ---
+
 st.set_page_config(
     page_title="IT Sector Financial Dashboard",
     layout="wide",
     page_icon="💹"
 )
 
-# --- API Keys (Replace with your own) ---
+
 NEWS_API_KEY = "362c23bc3419419bb51a91f64ec058e7"  
 ALPHA_VANTAGE_KEY = "G2KZQZBOBZ2OP9VN"  
 
-# --- Data Fetching Functions ---
+
 def get_stock_data(tickers, start_date, end_date):
     """Fetch stock prices from Yahoo Finance"""
     data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker')
@@ -65,11 +65,11 @@ def get_news(query="IT sector", language="en"):
     news = newsapi.get_everything(q=query, language=language, sort_by="publishedAt")
     return pd.DataFrame(news["articles"])
 
-# --- Dashboard UI ---
+
 st.title("📊 IT Sector Financial Dashboard")
 st.markdown("Track stock performance, exchange rates, and news in one place.")
 
-# --- Sidebar Controls ---
+
 with st.sidebar:
     st.header("Filters")
     date_range = st.date_input(
@@ -84,15 +84,15 @@ with st.sidebar:
     st.markdown("---")
     st.caption("Data Sources: Yahoo Finance, Alpha Vantage, NewsAPI")
 
-# --- Fetch Data ---
+
 stock_data = get_stock_data(selected_tickers, date_range[0], date_range[1])
 exchange_rates = get_exchange_rates()
 news_data = get_news()
 
-# --- Dashboard Layout ---
+
 tab1, tab2, tab3 = st.tabs(["📈 Stocks", "💱 Forex", "📰 News"])
 
-# --- Tab 1: Stock Performance ---
+
 with tab1:
     st.subheader("IT Stock Performance")
     if not stock_data.empty:
@@ -113,11 +113,10 @@ with tab1:
     else:
         st.warning("No stock data available.")
 
-# --- Tab 2: Exchange Rates ---
+
 with tab2:
     st.subheader("USD Exchange Rates")
     
-    # Try Alpha Vantage first
     forex_data = get_exchange_rates()
     
     if isinstance(forex_data, dict) and "error" in forex_data:
@@ -132,7 +131,7 @@ with tab2:
         st.error("Could not load exchange rates from any source")
         st.info("Try again later or check your API keys")
 
-# --- Tab 3: News Updates ---
+
 with tab3:
     st.subheader("Latest IT Sector News")
     if not news_data.empty:
@@ -143,7 +142,7 @@ with tab3:
     else:
         st.warning("No news articles found.")
 
-# --- Download Data ---
+
 st.sidebar.markdown("---")
 st.sidebar.download_button(
     label="📥 Download Stock Data (CSV)",
